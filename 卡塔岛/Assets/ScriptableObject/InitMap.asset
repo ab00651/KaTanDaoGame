@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e271f31a4b9ceee46a590d3531ed40ef, type: 3}
+  m_Name: InitMap
+  m_EditorClassIdentifier: 
+  tiles:
+  - landID: 1,-2
+    landType: hospital
+    landNumber: 6
+  - landID: 1,-2
+    landType: government
+    landNumber: 2
+  - landID: 2,-2
+    landType: factory
+    landNumber: 5
+  - landID: -1,-1
+    landType: government
+    landNumber: 3
+  - landID: 0,-1
+    landType: farmland
+    landNumber: 4
+  - landID: 1,-1
+    landType: farmland
+    landNumber: 9
+  - landID: 2,-1
+    landType: factory
+    landNumber: 10
+  - landID: -2,0
+    landType: farmland
+    landNumber: 8
+  - landID: -1,0
+    landType: hospital
+    landNumber: 5
+  - landID: 0,0
+    landType: newspaperoffice
+    landNumber: 7
+  - landID: 1,0
+    landType: bank
+    landNumber: 11
+  - landID: 2,0
+    landType: government
+    landNumber: 8
+  - landID: -2,1
+    landType: hospital
+    landNumber: 10
+  - landID: -1,1
+    landType: factory
+    landNumber: 6
+  - landID: 0,1
+    landType: farmland
+    landNumber: 3
+  - landID: 1,1
+    landType: factory
+    landNumber: 4
+  - landID: -2,2
+    landType: bank
+    landNumber: 9
+  - landID: -1,2
+    landType: hospital
+    landNumber: 12
+  - landID: 0,2
+    landType: bank
+    landNumber: 11
