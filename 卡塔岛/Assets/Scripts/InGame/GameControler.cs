@@ -13,5 +13,20 @@ public class GameControler : MonoBehaviour
             return;
         }
         map.GenerateMap(totalTiles);
+        
+        InitGameData();
     }
+    
+    private void InitGameData()
+    {
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("GameControler: 未找到 GameDataManager。");
+            return;
+        }
+
+        GameDataManager.Instance.InitGameData();
+        Debug.Log("玩家和 NPC 数据初始化完成。");
+    }
+
 }
