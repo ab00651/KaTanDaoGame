@@ -1,24 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LandControler : MonoBehaviour
 {
-    public int number;
-    public string type;
     public int positionNumber;
+    public string type;
+    public int number;
+    public List<int> nodeIds;   // 6个顶点ID
+    public List<int> edgeIds;   // 6条边ID
     public List<GameObject> controlpoints;
     public List<GameObject> controledges;
 
-    // Start is called before the first frame update
-    void Start()
+    public void InitFromData(HexTileData data)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        positionNumber = data.positionNumber;
+        type = data.terrainType;
+        number = data.diceNumber;
+        nodeIds = new List<int>(data.nodeIds);
+        edgeIds = new List<int>(data.edgeIds);
     }
 }
