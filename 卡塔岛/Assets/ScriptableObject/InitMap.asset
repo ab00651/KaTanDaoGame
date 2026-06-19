@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: InitMap
   m_EditorClassIdentifier: 
   tiles:
-  - landID: 1,-2
+  - landID: 0,-2
     landType: hospital
     landNumber: 6
   - landID: 1,-2
