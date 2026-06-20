@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class CharacterDataTester : MonoBehaviour
 {
-    private ResourceCost buildBondCost;
-    private ResourceCost buildRecognitionPointCost;
-    private ResourceCost upgradeRecognitionCenterCost;
 
     private void Start()
     {
