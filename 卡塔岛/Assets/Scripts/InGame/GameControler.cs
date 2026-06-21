@@ -14,7 +14,18 @@ public class GameControler : MonoBehaviour
         }
         map.GenerateMap(totalTiles);
         
+        
         InitGameData();
+        
+        GameStateMachine stateMachine = GetComponent<GameStateMachine>();
+        if (stateMachine != null)
+        {
+            stateMachine.StartGame();
+        }
+        else
+        {
+            Debug.LogError("GameControler: 未找到 GameStateMachine。");
+        }        
     }
     
     private void InitGameData()
