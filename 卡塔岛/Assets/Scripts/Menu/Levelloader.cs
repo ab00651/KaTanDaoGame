@@ -21,6 +21,7 @@ public class Levelloader : MonoBehaviour
     public void LoadNextLevel()
     {
         targetLevelIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        MapVisualizer.LoadFromSaveOnStart = false;
         transition.SetTrigger("End");
         Invoke("DoLoadLevel", transitionTime);
     }

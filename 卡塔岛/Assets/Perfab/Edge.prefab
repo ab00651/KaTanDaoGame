@@ -144,6 +144,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  orientation: 0
   nodeIdA: 0
   nodeIdB: 0

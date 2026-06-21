@@ -38,6 +38,22 @@ public class EdgeData
     public int nodeIdB;
 }
 
+// ==================== 存档数据 ====================
+
+[System.Serializable]
+public class TileSaveData
+{
+    public Vector2Int coord;
+    public string type;
+    public int number;
+}
+
+[System.Serializable]
+public class MapSaveData
+{
+    public List<TileSaveData> tiles = new List<TileSaveData>();
+}
+
 // ==================== Map ====================
 
 public class Map : MonoBehaviour
@@ -378,6 +394,62 @@ public class Map : MonoBehaviour
             result[i] = new Vector2Int(q, r);
         }
         return result;
+    }
+
+    // ==================== 存档 ====================
+
+    /// <summary>
+    /// 导出当前地图为存档数据
+    /// </summary>
+    public MapSaveData GetSaveData()
+    {
+        var data = new MapSaveData();
+        foreach (var tile in tileList)
+        {
+            data.tiles.Add(new TileSaveData
+            {
+                coord = tile.axialCoord,
+                type = tile.terrainType,
+                number = tile.diceNumber,
+            });
+        }
+        return data;
+    }
+
+    /// <summary>
+    /// 从存档数据还原地图（跳过随机生成）
+    /// </summary>
+    public void GenerateFromSaveData(MapSaveData data)
+    {
+        activeTiles = new Dictionary<Vector2Int, HexTileData>();
+        tileList = new List<HexTileData>();
+        nodeDict = new Dictionary<int, NodeData>();
+        edgeDict = new Dictionary<int, EdgeData>();
+
+        for (int i = 0; i < data.tiles.Count; i++)
+        {
+            var t = data.tiles[i];
+            int ring = HexUtils.GetRing(t.coord);
+            TileCategory cat = ring <= 1 ? TileCategory.Green
+                : ring == 2 ? TileCategory.Blue
+                : TileCategory.Gray;
+
+            var tile = new HexTileData
+            {
+                axialCoord = t.coord,
+                positionNumber = i,
+                category = cat,
+                terrainType = t.type,
+                diceNumber = t.number,
+                nodeIds = new List<int>(6),
+                edgeIds = new List<int>(6),
+            };
+            activeTiles[t.coord] = tile;
+            tileList.Add(tile);
+        }
+
+        GenerateNodesAndEdges();
+        LogMapInfo();
     }
 
     // ==================== 查询方法 ====================
