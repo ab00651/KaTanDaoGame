@@ -1,0 +1,187 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9175804164634669611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6667727718919679499}
+  - component: {fileID: 5053542636272742533}
+  - component: {fileID: 2628853963829291442}
+  - component: {fileID: 3519456686263993970}
+  - component: {fileID: 7721132692130917417}
+  - component: {fileID: 9096281038042395339}
+  - component: {fileID: 3248020502403155935}
+  m_Layer: 0
+  m_Name: GameControler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6667727718919679499
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1255.1105, y: 995.9641, z: -4.972798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5053542636272742533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fbb38df68a87e8499c0ca018a923554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTiles: 19
+--- !u!114 &2628853963829291442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbbecca50b02231419aa3e63e4e0e0e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sideLength: 5
+  tileSize: 1
+--- !u!114 &3519456686263993970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8747a0e2e1bc46428c98e8a067a430c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  map: {fileID: 2628853963829291442}
+  mapRoot: {fileID: 0}
+  tilePrefab: {fileID: 1398984776077156697, guid: dcc700184b203e0408daa26d5c07caf7, type: 3}
+  nodePrefab: {fileID: 7721571918138818497, guid: 1e08816957a31d44f8352a9d8de34cfb, type: 3}
+  edgePrefab: {fileID: 4603308057111716582, guid: 96ca175f892a4dd4591fc96fd6c5f4ee, type: 3}
+  showNodes: 1
+  showEdges: 1
+  usePreset: 1
+  presets:
+  - {fileID: 11400000, guid: 5e529b8c27643ba4f94e8a855ac7a0dc, type: 2}
+  labelFont: {fileID: 0}
+  tileScale: 1.3
+  nodeScale: 1
+  edgeWidth: 1
+  greenColor: {r: 0.3, g: 0.7, b: 0.3, a: 1}
+  blueColor: {r: 0.3, g: 0.5, b: 0.9, a: 1}
+  grayColor: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+--- !u!114 &7721132692130917417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1167699a6e6aaac4598d959b503d26f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerData:
+    characterType: 0
+    characterName: 
+    resources:
+      food: 0
+      housing: 0
+      medical: 0
+      legal: 0
+      credit: 0
+    recognitionScore: 0
+    bondCount: 0
+    recognitionPointCount: 0
+    recognitionCenterCount: 0
+    totalCrackCount: 0
+    brokenBondCount: 0
+  npcData:
+    characterType: 0
+    characterName: 
+    resources:
+      food: 0
+      housing: 0
+      medical: 0
+      legal: 0
+      credit: 0
+    recognitionScore: 0
+    bondCount: 0
+    recognitionPointCount: 0
+    recognitionCenterCount: 0
+    totalCrackCount: 0
+    brokenBondCount: 0
+  targetRecognitionScore: 10
+--- !u!114 &9096281038042395339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 735fee40e8f9bab49b6faff7844bf206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
+  uiController: {fileID: 3248020502403155935}
+  diceSystem: {fileID: 0}
+  productionSystem: {fileID: 0}
+  buildSystem: {fileID: 0}
+  pushAwaySystem: {fileID: 0}
+  npcActionSystem: {fileID: 0}
+  lastDiceA: 0
+  lastDiceB: 0
+  lastDiceTotal: 0
+  npcActionDelay: 0.8
+--- !u!114 &3248020502403155935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9175804164634669611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78ff30b47511f2441898a597f6a5d314, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentStateText: {fileID: 0}
+  currentTurnText: {fileID: 0}
+  diceResultText: {fileID: 0}
+  hintText: {fileID: 0}
+  playerDataText: {fileID: 0}
+  npcDataText: {fileID: 0}
+  logText: {fileID: 0}
+  rollDiceButton: {fileID: 0}
+  buildBondButton: {fileID: 0}
+  buildRecognitionPointButton: {fileID: 0}
+  upgradeRecognitionCenterButton: {fileID: 0}
+  pushAwayButton: {fileID: 0}
+  endTurnButton: {fileID: 0}
+  gameStateMachine: {fileID: 9096281038042395339}
