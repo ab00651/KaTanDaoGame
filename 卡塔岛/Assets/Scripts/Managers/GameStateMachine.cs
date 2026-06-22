@@ -232,11 +232,10 @@ public class GameStateMachine : MonoBehaviour
             return;
         }
 
-        CharacterData player = GameDataManager.Instance.playerData;
-
-        pushAwaySystem.UsePushAway(player, ResourceType.Food);
-
-        CheckGameEndAfterPlayerAction();
+        if (pushAwaySystem != null)
+            {
+                pushAwaySystem.SelectPushAwayBondMode();
+            }
     }
 
     public void OnClickEndTurn()

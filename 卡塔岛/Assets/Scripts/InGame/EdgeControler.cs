@@ -29,12 +29,20 @@ public class EdgeControler : MonoBehaviour
 
     private void OnMouseDown()
     {
-        BuildPlacementSystem buildPlacementSystem = FindObjectOfType<BuildPlacementSystem>();
-
-        if (buildPlacementSystem != null)
-        {
-            buildPlacementSystem.OnEdgeClicked(this);
-        }
+         PushAwaySystem pushAwaySystem = FindObjectOfType<PushAwaySystem>();
+     
+         if (pushAwaySystem != null && pushAwaySystem.IsSelectingBond)
+         {
+             pushAwaySystem.OnEdgeClicked(this);
+             return;
+         }
+     
+         BuildPlacementSystem buildPlacementSystem = FindObjectOfType<BuildPlacementSystem>();
+     
+         if (buildPlacementSystem != null)
+         {
+             buildPlacementSystem.OnEdgeClicked(this);
+         }
     }
 
     public bool CanBuildBond()
@@ -57,6 +65,27 @@ public class EdgeControler : MonoBehaviour
 
         Debug.Log($"Edge {id} 建造纽带。Owner = {newOwner}");
     }
+    
+    public bool HasBondOwnedBy(OwnerType targetOwner)
+    {
+        return hasBond && owner == targetOwner;
+    }
+    
+    public void RemoveBond()
+    {
+        owner = OwnerType.None;
+        hasBond = false;
+    
+        if (data != null)
+        {
+            data.owner = OwnerType.None;
+            data.hasBond = false;
+        }
+    
+        RefreshVisual();
+    
+        Debug.Log($"Edge {id} 上的纽带被移除。");
+    }    
 
     private void RefreshVisual()
     {
@@ -93,4 +122,5 @@ public class EdgeControler : MonoBehaviour
         
         spriteRenderer.color = Color.gray;
     }
+    
 }
