@@ -27,12 +27,17 @@ public class GameUIController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameStateMachine gameStateMachine;
+    [SerializeField] private BuildPlacementSystem buildPlacementSystem;
 
     private void Awake()
     {
         if (gameStateMachine == null)
         {
             gameStateMachine = FindObjectOfType<GameStateMachine>();
+        }
+        if (buildPlacementSystem == null)
+        {
+            buildPlacementSystem = FindObjectOfType<BuildPlacementSystem>();
         }
     }
 
@@ -50,13 +55,27 @@ public class GameUIController : MonoBehaviour
             Debug.LogError("GameUIController: 没有找到 GameStateMachine。");
             return;
         }
+        if (buildPlacementSystem == null)
+        {
+            Debug.LogError("GameUIController: 没有找到 BuildPlacementSystem。");
+            return;
+        }
 
-        rollDiceButton.onClick.AddListener(gameStateMachine.OnClickRollDice);
-        buildBondButton.onClick.AddListener(gameStateMachine.OnClickBuildBond);
-        buildRecognitionPointButton.onClick.AddListener(gameStateMachine.OnClickBuildRecognitionPoint);
-        upgradeRecognitionCenterButton.onClick.AddListener(gameStateMachine.OnClickUpgradeRecognitionCenter);
-        pushAwayButton.onClick.AddListener(gameStateMachine.OnClickPushAway);
-        endTurnButton.onClick.AddListener(gameStateMachine.OnClickEndTurn);
+        rollDiceButton.onClick.RemoveAllListeners();
+            buildBondButton.onClick.RemoveAllListeners();
+            buildRecognitionPointButton.onClick.RemoveAllListeners();
+            upgradeRecognitionCenterButton.onClick.RemoveAllListeners();
+            pushAwayButton.onClick.RemoveAllListeners();
+            endTurnButton.onClick.RemoveAllListeners();
+        
+            rollDiceButton.onClick.AddListener(gameStateMachine.OnClickRollDice);
+        
+            buildBondButton.onClick.AddListener(buildPlacementSystem.SelectBuildBondMode);
+            buildRecognitionPointButton.onClick.AddListener(buildPlacementSystem.SelectBuildRecognitionPointMode);
+            upgradeRecognitionCenterButton.onClick.AddListener(buildPlacementSystem.SelectUpgradeRecognitionCenterMode);
+        
+            pushAwayButton.onClick.AddListener(gameStateMachine.OnClickPushAway);
+            endTurnButton.onClick.AddListener(gameStateMachine.OnClickEndTurn);
     }
 
     public void RefreshAll()

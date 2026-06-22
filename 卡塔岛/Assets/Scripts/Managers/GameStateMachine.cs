@@ -87,36 +87,7 @@ public class GameStateMachine : MonoBehaviour
 
     private void Update()
     {
-        // 临时键盘测试，之后可以换成 UI Button
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            OnClickRollDice();
-        }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            OnClickBuildBond();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            OnClickBuildRecognitionPoint();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            OnClickUpgradeRecognitionCenter();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            OnClickPushAway();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            OnClickEndTurn();
-        }
     }
 
     public void StartGame()
@@ -206,7 +177,6 @@ public class GameStateMachine : MonoBehaviour
         ChangeState(GameState.PlayerAction);
 
         Debug.Log("进入玩家行动阶段。");
-        Debug.Log("按 1 建造纽带，按 2 建造认同点，按 3 升级认同中心，按 4 推开，按 Enter 结束回合。");
     }
 
     public void OnClickBuildBond()
@@ -389,12 +359,9 @@ public class GameStateMachine : MonoBehaviour
     {
         currentState = newState;
         Debug.Log($"当前状态切换为：{currentState}");
-        string message = $"当前状态切换为：{currentState}";
-            Debug.Log(message);
         
             if (uiController != null)
             {
-                uiController.AddLog(message);
                 uiController.RefreshAll();
             }
     }

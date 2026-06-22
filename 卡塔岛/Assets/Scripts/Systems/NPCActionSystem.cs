@@ -2,38 +2,146 @@ using UnityEngine;
 
 public class NPCActionSystem : MonoBehaviour
 {
-    [SerializeField] private BuildSystem buildSystem;
+    [Header("References")]
+    [SerializeField] private GameUIController uiController;
 
     private void Awake()
     {
-        if (buildSystem == null)
+        if (uiController == null)
         {
-            buildSystem = GetComponent<BuildSystem>();
+            uiController = FindObjectOfType<GameUIController>();
         }
     }
 
     public void ExecuteNPCAction()
     {
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("NPCActionSystem: 没有找到 GameDataManager。");
+            return;
+        }
+
         CharacterData npc = GameDataManager.Instance.npcData;
 
-        if (buildSystem.CanUpgradeRecognitionCenter(npc))
+        if (TryUpgradeRecognitionCenterOnMap(npc))
         {
-            buildSystem.UpgradeRecognitionCenter(npc);
-            Debug.Log("NPC 行动：升级认同中心。");
+            AddLogAndRefreshUI("NPC 行动：升级认同中心。");
         }
-        else if (buildSystem.CanBuildRecognitionPoint(npc))
+        else if (TryBuildRecognitionPointOnMap(npc))
         {
-            buildSystem.BuildRecognitionPoint(npc);
-            Debug.Log("NPC 行动：建造认同点。");
+            AddLogAndRefreshUI("NPC 行动：建造认同点。");
         }
-        else if (buildSystem.CanBuildBond(npc))
+        else if (TryBuildBondOnMap(npc))
         {
-            buildSystem.BuildBond(npc);
-            Debug.Log("NPC 行动：建造纽带。");
+            AddLogAndRefreshUI("NPC 行动：建造纽带。");
         }
         else
         {
-            Debug.Log("NPC 资源不足，无法建设，结束行动。");
+            AddLogAndRefreshUI("NPC 资源不足或没有可建造位置，结束行动。");
+        }
+    }
+
+    private bool TryUpgradeRecognitionCenterOnMap(CharacterData npc)
+    {
+        if (!npc.CanUpgradeRecognitionCenter())
+        {
+            return false;
+        }
+
+        ResourceCost cost = BuildCosts.CreateUpgradeRecognitionCenterCost();
+
+        if (!npc.CanAfford(cost))
+        {
+            return false;
+        }
+
+        NodeControler[] nodes = FindObjectsOfType<NodeControler>();
+
+        foreach (NodeControler node in nodes)
+        {
+            if (node.HasRecognitionPoint(OwnerType.NPC))
+            {
+                if (!npc.SpendResources(cost))
+                {
+                    return false;
+                }
+
+                node.UpgradeToRecognitionCenter();
+                npc.UpgradeRecognitionCenter();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryBuildRecognitionPointOnMap(CharacterData npc)
+    {
+        ResourceCost cost = BuildCosts.CreateBuildRecognitionPointCost();
+
+        if (!npc.CanAfford(cost))
+        {
+            return false;
+        }
+
+        NodeControler[] nodes = FindObjectsOfType<NodeControler>();
+
+        foreach (NodeControler node in nodes)
+        {
+            if (node.IsEmpty())
+            {
+                if (!npc.SpendResources(cost))
+                {
+                    return false;
+                }
+
+                node.SetRecognitionPoint(OwnerType.NPC);
+                npc.AddRecognitionPoint();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryBuildBondOnMap(CharacterData npc)
+    {
+        ResourceCost cost = BuildCosts.CreateBuildBondCost();
+
+        if (!npc.CanAfford(cost))
+        {
+            return false;
+        }
+
+        EdgeControler[] edges = FindObjectsOfType<EdgeControler>();
+
+        foreach (EdgeControler edge in edges)
+        {
+            if (edge.CanBuildBond())
+            {
+                if (!npc.SpendResources(cost))
+                {
+                    return false;
+                }
+
+                edge.SetBond(OwnerType.NPC);
+                npc.AddBond();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void AddLogAndRefreshUI(string message)
+    {
+        Debug.Log(message);
+        if (uiController != null)
+        {
+            uiController.RefreshAll();
         }
     }
 }

@@ -29,6 +29,9 @@ public class NodeData
     public int id;
     public Vector3 worldPosition;
     public List<int> edgeIds;   // 与之连接的3条边ID
+    
+    public OwnerType owner = OwnerType.None;
+    public NodeBuildingType buildingType = NodeBuildingType.None;
 }
 
 public class EdgeData
@@ -36,6 +39,9 @@ public class EdgeData
     public int id;
     public int nodeIdA;
     public int nodeIdB;
+    
+    public OwnerType owner = OwnerType.None;
+    public bool hasBond = false;
 }
 
 // ==================== Map ====================
