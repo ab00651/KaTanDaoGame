@@ -26,12 +26,28 @@ public class NodeControler : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        BuildPlacementSystem buildPlacementSystem = FindObjectOfType<BuildPlacementSystem>();
-
-        if (buildPlacementSystem != null)
-        {
-            buildPlacementSystem.OnNodeClicked(this);
-        }
+         SetupPlacementSystem setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
+     
+         if (setupPlacementSystem != null && setupPlacementSystem.IsInSetupPlacement())
+         {
+             setupPlacementSystem.OnNodeClicked(this);
+             return;
+         }
+     
+         PushAwaySystem pushAwaySystem = FindObjectOfType<PushAwaySystem>();
+     
+         if (pushAwaySystem != null && pushAwaySystem.IsSelectingBond)
+         {
+             Debug.Log("当前是【推开】模式，请点击一条自己的纽带 Edge，不要点击 Node。");
+             return;
+         }
+     
+         BuildPlacementSystem buildPlacementSystem = FindObjectOfType<BuildPlacementSystem>();
+     
+         if (buildPlacementSystem != null)
+         {
+             buildPlacementSystem.OnNodeClicked(this);
+         }
     }
 
     public bool IsEmpty()
@@ -129,4 +145,24 @@ public class NodeControler : MonoBehaviour
         return;
     }
         
-    }}
+    }
+    public bool IsConnectedToOwnerBond(OwnerType targetOwner)
+    {
+        EdgeControler[] edges = FindObjectsOfType<EdgeControler>();
+    
+        foreach (EdgeControler edge in edges)
+        {
+            if (!edgeIds.Contains(edge.id))
+            {
+                continue;
+            }
+    
+            if (edge.HasBondOwnedBy(targetOwner))
+            {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+}

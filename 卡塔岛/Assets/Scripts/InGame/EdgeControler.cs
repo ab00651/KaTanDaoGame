@@ -29,6 +29,14 @@ public class EdgeControler : MonoBehaviour
 
     private void OnMouseDown()
     {
+        SetupPlacementSystem setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
+        
+        if (setupPlacementSystem != null && setupPlacementSystem.IsInSetupPlacement())
+        {
+            setupPlacementSystem.OnEdgeClicked(this);
+            return;
+        }
+        
          PushAwaySystem pushAwaySystem = FindObjectOfType<PushAwaySystem>();
      
          if (pushAwaySystem != null && pushAwaySystem.IsSelectingBond)
@@ -121,6 +129,27 @@ public class EdgeControler : MonoBehaviour
         }
         
         spriteRenderer.color = Color.gray;
+    }
+    
+    public bool IsConnectedToOwnerNode(OwnerType targetOwner)
+    {
+        NodeControler[] nodes = FindObjectsOfType<NodeControler>();
+    
+        foreach (NodeControler node in nodes)
+        {
+            if (node.id != nodeIdA && node.id != nodeIdB)
+            {
+                continue;
+            }
+    
+            if (node.owner == targetOwner &&
+                node.buildingType != NodeBuildingType.None)
+            {
+                return true;
+            }
+        }
+    
+        return false;
     }
     
 }

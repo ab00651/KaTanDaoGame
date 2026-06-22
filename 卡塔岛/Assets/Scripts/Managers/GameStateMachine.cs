@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum GameState
 {
-    GameStart,
+    GameStart,SetupPlacement,
 
     PlayerTurnStart,
     PlayerRollDice,
@@ -36,6 +36,7 @@ public class GameStateMachine : MonoBehaviour
     [SerializeField] private BuildSystem buildSystem;
     [SerializeField] private PushAwaySystem pushAwaySystem;
     [SerializeField] private NPCActionSystem npcActionSystem;
+    [SerializeField] private SetupPlacementSystem setupPlacementSystem;
 
     [Header("Dice")]
     public int lastDiceA;
@@ -77,6 +78,11 @@ public class GameStateMachine : MonoBehaviour
         {
             npcActionSystem = GetComponent<NPCActionSystem>();
         }
+        
+        if (setupPlacementSystem == null)
+        {
+            setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
+        }
     }
 
     /*
@@ -93,17 +99,23 @@ public class GameStateMachine : MonoBehaviour
     public void StartGame()
     {
         ChangeState(GameState.GameStart);
-
-        if (GameDataManager.Instance == null)
-        {
-            Debug.LogError("没有找到 GameDataManager，无法开始游戏。");
-            return;
-        }
-
+        
         GameDataManager.Instance.InitGameData();
-
-        AddLog("游戏开始。");
-
+        
+        Debug.Log("游戏开始。");
+        
+        if (setupPlacementSystem == null)
+        {
+            setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
+        }
+        
+        ChangeState(GameState.SetupPlacement);
+        
+        setupPlacementSystem.StartSetupPlacement();
+    }
+    
+    public void EnterPlayerTurnStartFromSetup()
+    {
         EnterPlayerTurnStart();
     }
 

@@ -9043,6 +9043,7 @@ GameObject:
   - component: {fileID: 700694604}
   - component: {fileID: 700694603}
   - component: {fileID: 700694602}
+  - component: {fileID: 700694608}
   m_Layer: 0
   m_Name: SystemControler
   m_TagString: Untagged
@@ -9100,6 +9101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0205fd2b849a0a45a821d732fd79f46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rewardType: 0
+  gameStateMachine: {fileID: 0}
+  uiController: {fileID: 0}
 --- !u!114 &700694606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9127,6 +9131,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &700694608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700694601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822376df59bb34e4f9be8071afc8705f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  setupRound: 1
+  currentOwner: 1
+  currentPlacementPhase: 0
+  gameStateMachine: {fileID: 2110799845}
+  uiController: {fileID: 2110799846}
 --- !u!1 &701857801
 GameObject:
   m_ObjectHideFlags: 0
@@ -29265,6 +29286,10 @@ PrefabInstance:
       propertyPath: productionSystem
       value: 
       objectReference: {fileID: 700694604}
+    - target: {fileID: 9096281038042395339, guid: 355764d875d5bd949be643d41c0c2e5f, type: 3}
+      propertyPath: setupPlacementSystem
+      value: 
+      objectReference: {fileID: 700694608}
     - target: {fileID: 9175804164634669611, guid: 355764d875d5bd949be643d41c0c2e5f, type: 3}
       propertyPath: m_Name
       value: GameControler

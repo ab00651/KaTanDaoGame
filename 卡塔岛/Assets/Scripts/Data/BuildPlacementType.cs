@@ -19,3 +19,10 @@ public enum BuildMode
     BuildRecognitionPoint,
     UpgradeRecognitionCenter
 }
+
+public enum PlacementPhase
+{
+    None,
+    PlaceRecognitionPoint,
+    PlaceBond
+}

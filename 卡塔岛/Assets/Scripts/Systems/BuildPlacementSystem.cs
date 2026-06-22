@@ -133,6 +133,11 @@ public class BuildPlacementSystem : MonoBehaviour
             Debug.Log("这条 Edge 已经有纽带，不能重复建造。");
             return;
         }
+        if (!edge.IsConnectedToOwnerNode(OwnerType.Player))
+        {
+            Debug.Log("纽带必须建在连接自己认同点或认同中心的 Edge 上。");
+            return;
+        }
 
         CharacterData player = GameDataManager.Instance.playerData;
         ResourceCost cost = BuildCosts.CreateBuildBondCost();
@@ -163,6 +168,11 @@ public class BuildPlacementSystem : MonoBehaviour
         if (!node.IsEmpty())
         {
             Debug.Log("这个 Node 已经有建筑，不能建造认同点。");
+            return;
+        }
+        if (!node.IsConnectedToOwnerBond(OwnerType.Player))
+        {
+            Debug.Log("认同点必须建在连接自己纽带的空 Node 上。");
             return;
         }
 
