@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CharacterDataTester : MonoBehaviour
 {
+    [SerializeField] private GameUIController uiController;
 
     private void Start()
     {
@@ -9,6 +10,7 @@ public class CharacterDataTester : MonoBehaviour
 
     private void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             TestBuildBond();
@@ -32,11 +34,25 @@ public class CharacterDataTester : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
             PrintPlayerData();
-        }
+        }*/
 
-        if (Input.GetKeyDown(KeyCode.Alpha6))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             TestAddResources();
+            if (uiController != null)
+            {
+                uiController.RefreshAll();
+            
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            TestAddNPCResources();
+            if (uiController != null)
+            {
+                uiController.RefreshAll();
+            
+            }                    
         }
     }
 
@@ -112,12 +128,22 @@ public class CharacterDataTester : MonoBehaviour
         player.AddResource(ResourceType.Legal, 3);
         player.AddResource(ResourceType.Credit, 3);
 
-        PrintPlayerData();
     }
+    
+    private void TestAddNPCResources()
+        {
+            CharacterData npc = GameDataManager.Instance.npcData;
+    
+            npc.AddResource(ResourceType.Food, 3);
+            npc.AddResource(ResourceType.Housing, 3);
+            npc.AddResource(ResourceType.Medical, 3);
+            npc.AddResource(ResourceType.Legal, 3);
+            npc.AddResource(ResourceType.Credit, 3);
+
+        }
 
     private void PrintPlayerData()
     {
         CharacterData player = GameDataManager.Instance.playerData;
-        Debug.Log(player.GetDebugText());
     }
 }

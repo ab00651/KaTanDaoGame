@@ -39,11 +39,11 @@ public class CharacterData
 
         resources.SetDefaultCoreLoopResources();
 
-        bondCount = 1;
-        recognitionPointCount = 2;
+        bondCount = 0;
+        recognitionPointCount = 0;
         recognitionCenterCount = 0;
 
-        recognitionScore = 2;
+        recognitionScore = 0;
 
         totalCrackCount = 0;
         brokenBondCount = 0;

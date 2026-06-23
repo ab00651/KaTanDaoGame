@@ -6,10 +6,150 @@ public class EdgeControler : MonoBehaviour
     public int nodeIdA;
     public int nodeIdB;
 
+    public OwnerType owner;
+    public bool hasBond;
+
+    private EdgeData data;
+    private SpriteRenderer spriteRenderer;
+
     public void InitFromData(EdgeData data)
     {
+        this.data = data;
+
         id = data.id;
         nodeIdA = data.nodeIdA;
         nodeIdB = data.nodeIdB;
+
+        owner = data.owner;
+        hasBond = data.hasBond;
+
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        RefreshVisual();
     }
+
+    private void OnMouseDown()
+    {
+        SetupPlacementSystem setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
+        
+        if (setupPlacementSystem != null && setupPlacementSystem.IsInSetupPlacement())
+        {
+            setupPlacementSystem.OnEdgeClicked(this);
+            return;
+        }
+        
+         PushAwaySystem pushAwaySystem = FindObjectOfType<PushAwaySystem>();
+     
+         if (pushAwaySystem != null && pushAwaySystem.IsSelectingBond)
+         {
+             pushAwaySystem.OnEdgeClicked(this);
+             return;
+         }
+     
+         BuildPlacementSystem buildPlacementSystem = FindObjectOfType<BuildPlacementSystem>();
+     
+         if (buildPlacementSystem != null)
+         {
+             buildPlacementSystem.OnEdgeClicked(this);
+         }
+    }
+
+    public bool CanBuildBond()
+    {
+        return owner == OwnerType.None && !hasBond;
+    }
+
+    public void SetBond(OwnerType newOwner)
+    {
+        owner = newOwner;
+        hasBond = true;
+
+        if (data != null)
+        {
+            data.owner = newOwner;
+            data.hasBond = true;
+        }
+
+        RefreshVisual();
+
+        Debug.Log($"Edge {id} 建造纽带。Owner = {newOwner}");
+    }
+    
+    public bool HasBondOwnedBy(OwnerType targetOwner)
+    {
+        return hasBond && owner == targetOwner;
+    }
+    
+    public void RemoveBond()
+    {
+        owner = OwnerType.None;
+        hasBond = false;
+    
+        if (data != null)
+        {
+            data.owner = OwnerType.None;
+            data.hasBond = false;
+        }
+    
+        RefreshVisual();
+    
+        Debug.Log($"Edge {id} 上的纽带被移除。");
+    }    
+
+    private void RefreshVisual()
+    {
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        }
+
+        if (spriteRenderer == null)
+        {
+            return;
+        }
+
+        // 没有纽带
+        if (!hasBond)
+        {
+            spriteRenderer.color = Color.white;
+            return;
+        }
+
+        // 玩家纽带
+        if (owner == OwnerType.Player)
+        {
+            spriteRenderer.color = Color.red;
+            return;
+        }
+
+        // NPC 纽带
+        if (owner == OwnerType.NPC)
+        {
+            spriteRenderer.color = Color.black;
+            return;
+        }
+        
+        spriteRenderer.color = Color.gray;
+    }
+    
+    public bool IsConnectedToOwnerNode(OwnerType targetOwner)
+    {
+        NodeControler[] nodes = FindObjectsOfType<NodeControler>();
+    
+        foreach (NodeControler node in nodes)
+        {
+            if (node.id != nodeIdA && node.id != nodeIdB)
+            {
+                continue;
+            }
+    
+            if (node.owner == targetOwner &&
+                node.buildingType != NodeBuildingType.None)
+            {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+    
 }
