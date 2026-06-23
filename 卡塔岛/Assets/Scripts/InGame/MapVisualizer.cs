@@ -10,6 +10,7 @@ public class MapVisualizer : MonoBehaviour
     [SerializeField] private GameObject edgePrefab;
     [SerializeField] private bool showNodes = true;
     [SerializeField] private bool showEdges = true;
+    [SerializeField] private bool loadFromSave = false;
     [SerializeField] private bool usePreset = false;
     [SerializeField] private List<MapPreset> presets = new List<MapPreset>();
     [SerializeField] private TMPro.TMP_FontAsset labelFont;
@@ -17,10 +18,10 @@ public class MapVisualizer : MonoBehaviour
     [SerializeField] private float nodeScale = 0.15f;
     [SerializeField] private float edgeWidth = 0.08f;
 
-    [Header("Tile Colors")]
-    [SerializeField] private Color greenColor = new Color(0.55f, 0.55f, 0.55f);
-    [SerializeField] private Color blueColor = new Color(0.55f, 0.55f, 0.55f);
-    [SerializeField] private Color grayColor = new Color(0.55f, 0.55f, 0.55f);
+    /// <summary>
+    /// 跨场景标记：下一个场景启动时是否读档
+    /// </summary>
+    public static bool LoadFromSaveOnStart { get; set; } = false;
 
     private Transform tilesParent;
     private Transform nodesParent;
@@ -34,13 +35,28 @@ public class MapVisualizer : MonoBehaviour
             Debug.LogError("MapVisualizer: 未找到Map组件");
             return;
         }
+        // Levelloader 跨场景传来的标记优先
+        if (LoadFromSaveOnStart)
+            loadFromSave = true;
+        LoadFromSaveOnStart = false;
+
         Invoke(nameof(Visualize), 0.1f);
     }
 
     public void Visualize()
     {
+        // 读档模式：从存档还原
+        if (loadFromSave)
+        {
+            var archive = FindObjectOfType<Archive>();
+            if (archive != null)
+            {
+                var data = archive.LoadMapData();
+                if (data != null) map.GenerateFromSaveData(data);
+            }
+        }
         // 预设模式：用预设数据覆盖随机生成
-        if (usePreset && presets.Count > 0 && presets[0] != null)
+        else if (usePreset && presets.Count > 0 && presets[0] != null)
         {
             map.GenerateFromPreset(presets[0]);
         }
@@ -105,9 +121,6 @@ public class MapVisualizer : MonoBehaviour
                 visual.localScale = Vector3.one * tileScale;
 
             var sr = go.GetComponentInChildren<SpriteRenderer>();
-            if (sr != null)
-                sr.color = GetTileColor(tile.category);
-
             var ctrl = go.GetComponent<LandControler>();
             if (ctrl != null) ctrl.InitFromData(tile);
 
@@ -225,14 +238,4 @@ public class MapVisualizer : MonoBehaviour
 
     // ==================== 辅助 ====================
 
-    private Color GetTileColor(TileCategory category)
-    {
-        switch (category)
-        {
-            case TileCategory.Green: return greenColor;
-            case TileCategory.Blue: return blueColor;
-            case TileCategory.Gray: return grayColor;
-            default: return Color.white;
-        }
-    }
 }
