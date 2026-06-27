@@ -142,8 +142,21 @@ public class Map : MonoBehaviour
         "farmland", "factory", "hospital", "government", "bank"
     };
 
+    // 可用的骰子数字：2-12 除去 7
+    private static readonly int[] DicePool = { 2, 3, 4, 5, 6, 8, 9, 10, 11, 12 };
+
     private void AssignTileAttributes(MapPreset preset = null)
     {
+        // 生成均衡分布的数字和地形列表
+        int nonCenterCount = 0;
+        foreach (var tile in tileList)
+            if (tile.axialCoord != Vector2Int.zero) nonCenterCount++;
+
+        var diceNumbers = GenerateBalancedDistribution(DicePool, nonCenterCount);
+        var terrainTypesQueue = GenerateBalancedDistribution(TerrainTypes, nonCenterCount);
+        int diceIndex = 0;
+        int terrainIndex = 0;
+
         foreach (var tile in tileList)
         {
             // 预设模式：优先用预设数据
@@ -166,17 +179,46 @@ public class Map : MonoBehaviour
             }
             else
             {
-                tile.terrainType = TerrainTypes[Random.Range(0, TerrainTypes.Length)];
-                tile.diceNumber = RandomDiceNumber();
+                tile.terrainType = terrainTypesQueue[terrainIndex++];
+                tile.diceNumber = diceNumbers[diceIndex++];
             }
         }
     }
 
-    private static int RandomDiceNumber()
+    /// <summary>
+    /// 生成均衡分布列表：每个值至少出现一次，剩余的均匀循环填充
+    /// </summary>
+    private static List<T> GenerateBalancedDistribution<T>(T[] pool, int count)
     {
-        int n;
-        do { n = Random.Range(1, 13); } while (n == 7);
-        return n;
+        if (count <= 0) return new List<T>();
+
+        var result = new List<T>(count);
+        var shuffled = new List<T>(pool);
+        Shuffle(shuffled);
+
+        // 第一轮：每个值至少一次
+        for (int i = 0; i < shuffled.Count && result.Count < count; i++)
+            result.Add(shuffled[i]);
+
+        // 剩余位置：循环填充
+        while (result.Count < count)
+        {
+            Shuffle(shuffled);
+            for (int i = 0; i < shuffled.Count && result.Count < count; i++)
+                result.Add(shuffled[i]);
+        }
+
+        Shuffle(result);
+        return result;
+    }
+
+    private static void Shuffle<T>(List<T> list)
+    {
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (list[i], list[j]) = (list[j], list[i]);
+        }
     }
 
     // ==================== 地块生成 ====================

@@ -85,10 +85,10 @@ public class Bankexchange : MonoBehaviour
 
     private void OnReceiveClicked(int index)
     {
-        if (index < 0 || index >= ResourceTypes.Length) return;
-        selectedReceive = ResourceTypes[index];
+        if (index < 0 || index >= receiveResourceButtons.Count) return;
+        selectedReceive = receiveResourceButtons[index].resourceType;
         if (receiveMainButtonLabel != null)
-            receiveMainButtonLabel.text = ResourceTypes[index].ToString();
+            receiveMainButtonLabel.text = receiveResourceButtons[index].resourceType.ToString();
         receivePanel?.SetActive(false);
     }
 
@@ -149,5 +149,7 @@ public class Bankexchange : MonoBehaviour
         public Button button;
         public TextMeshProUGUI nameLabel;
         public TextMeshProUGUI amountLabel;
+        [Tooltip("此按钮对应的实际资源类型")]
+        public ResourceType resourceType;
     }
 }
