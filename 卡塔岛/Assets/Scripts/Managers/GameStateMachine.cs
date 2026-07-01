@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum GameState
 {
-    GameStart,SetupPlacement,
+    GameStart,
+        SetupPlacement,
 
     PlayerTurnStart,
     PlayerRollDice,

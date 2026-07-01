@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum IdentityType
+{
+    TideSpeaker,   // 潮语者
+    CodeCitizen,   // 代码民
+    CoralDescendant // 珊瑚裔
+}
+
 [System.Serializable]
 public class CharacterData 
 {
@@ -9,6 +17,10 @@ public class CharacterData
     public CharacterType characterType;
     public string characterName;
 
+        
+    [Header("Identity")]
+    public IdentityType identityType;
+    
     [Header("Resources")]
     public ResourceStorage resources = new ResourceStorage();
 
@@ -23,6 +35,7 @@ public class CharacterData
     [Header("Cracks")]
     public int totalCrackCount;
     public int brokenBondCount;
+
     
     public void InitAsCoreLoopDefault(CharacterType type)
     {
@@ -37,6 +50,8 @@ public class CharacterData
             characterName = "NPC";
         }
 
+        identityType = GetRandomIdentity();
+        
         resources.SetDefaultCoreLoopResources();
 
         bondCount = 0;
@@ -148,5 +163,12 @@ public class CharacterData
             $"认同中心：{recognitionCenterCount}\n" +
             $"裂痕：{totalCrackCount}\n" +
             $"断裂纽带：{brokenBondCount}";
+    }
+    
+    private IdentityType GetRandomIdentity()
+    {
+        int randomIndex = Random.Range(0, 3);
+    
+        return (IdentityType)randomIndex;
     }
 }

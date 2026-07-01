@@ -127,6 +127,7 @@ public class GameUIController : MonoBehaviour
     {
         return
             $"{title}\n" +
+            $"身份：{data.identityType}\n" +
             $"食物：{data.resources.food}\n" +
             $"住房：{data.resources.housing}\n" +
             $"医疗：{data.resources.medical}\n" +
