@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19635c15d11a934c92a5c3a25c81f7b, type: 3}
+  m_Name: EventCard2
+  m_EditorClassIdentifier: 
+  cardName: "\u4E34\u65F6\u517C\u804C"
+  description: "\u9879\u76EE\u6765\u5F97\u5F88\u6025\uFF0C\u94B1\u4E5F\u7ED9\u5F97\u5F88\u5FEB\u3002\u4F60\u8FD8\u6CA1\u5B8C\u5168\u719F\u6089\u8FD9\u5EA7\u57CE\u5E02\uFF0C\u4F46\u5DF2\u7ECF\u5148\u63A5\u5230\u4E86\u4E00\u5355\u6D3B\u3002"
+  poolType: 0
+  targetType: 0
+  effectType: 0
+  resourceType: 4
+  amount: 3
+  resourceAmounts: []
+  requireIdentity: 1
+  requiredIdentity: 1
+  useFallbackIfIdentityNotMatch: 1
+  fallbackResourceType: 4
+  fallbackAmount: 1

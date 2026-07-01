@@ -36506,6 +36506,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 455441423}
     - target: {fileID: 6620556356159072729, guid: 355764d875d5bd949be643d41c0c2e5f, type: 3}
+      propertyPath: showEdges
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620556356159072729, guid: 355764d875d5bd949be643d41c0c2e5f, type: 3}
       propertyPath: usePreset
       value: 1
       objectReference: {fileID: 0}
