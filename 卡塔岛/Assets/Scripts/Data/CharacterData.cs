@@ -35,6 +35,9 @@ public class CharacterData
     [Header("Cracks")]
     public int totalCrackCount;
     public int brokenBondCount;
+    
+    [Header("Cards")]
+    public int focusCardCount;
 
     
     public void InitAsCoreLoopDefault(CharacterType type)
@@ -62,6 +65,8 @@ public class CharacterData
 
         totalCrackCount = 0;
         brokenBondCount = 0;
+        
+        focusCardCount = 0;
     }
 
     public void AddResource(ResourceType type, int amount)
@@ -170,5 +175,11 @@ public class CharacterData
         int randomIndex = Random.Range(0, 3);
     
         return (IdentityType)randomIndex;
+    }
+    
+    public void AddFocusCard(int amount)
+    {
+        focusCardCount += amount;
+        Debug.Log($"{characterName} 获得 {amount} 张焦点卡，当前焦点卡数量：{focusCardCount}");
     }
 }

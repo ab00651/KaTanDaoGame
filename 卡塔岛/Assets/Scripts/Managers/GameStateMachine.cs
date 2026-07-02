@@ -5,7 +5,7 @@ using UnityEngine;
 public enum GameState
 {
     GameStart,
-        SetupPlacement,
+    SetupPlacement,
 
     PlayerTurnStart,
     PlayerRollDice,
@@ -27,7 +27,7 @@ public class GameStateMachine : MonoBehaviour
 {
     [Header("State")]
     public GameState currentState;
-    
+
     [Header("UI")]
     [SerializeField] private GameUIController uiController;
 
@@ -38,11 +38,16 @@ public class GameStateMachine : MonoBehaviour
     [SerializeField] private PushAwaySystem pushAwaySystem;
     [SerializeField] private NPCActionSystem npcActionSystem;
     [SerializeField] private SetupPlacementSystem setupPlacementSystem;
+    [SerializeField] private EventSystem eventSystem;
 
     [Header("Dice")]
     public int lastDiceA;
     public int lastDiceB;
     public int lastDiceTotal;
+
+    [Header("Round Tracking")]
+    [SerializeField] private int fullRoundNumber = 1;
+    [SerializeField] private bool onboardingEventTriggered = false;
 
     [Header("Settings")]
     [SerializeField] private float npcActionDelay = 0.8f;
@@ -55,6 +60,7 @@ public class GameStateMachine : MonoBehaviour
         {
             uiController = FindObjectOfType<GameUIController>();
         }
+
         if (diceSystem == null)
         {
             diceSystem = GetComponent<DiceSystem>();
@@ -79,10 +85,25 @@ public class GameStateMachine : MonoBehaviour
         {
             npcActionSystem = GetComponent<NPCActionSystem>();
         }
-        
+
+        if (setupPlacementSystem == null)
+        {
+            setupPlacementSystem = GetComponent<SetupPlacementSystem>();
+        }
+
         if (setupPlacementSystem == null)
         {
             setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
+        }
+
+        if (eventSystem == null)
+        {
+            eventSystem = GetComponent<EventSystem>();
+        }
+
+        if (eventSystem == null)
+        {
+            eventSystem = FindObjectOfType<EventSystem>();
         }
     }
 
@@ -90,31 +111,37 @@ public class GameStateMachine : MonoBehaviour
     private void Start()
     {
         StartGame();
-    }*/
-
-    private void Update()
-    {
-
     }
+    */
 
     public void StartGame()
     {
         ChangeState(GameState.GameStart);
-        
+
         GameDataManager.Instance.InitGameData();
-        
-        Debug.Log("游戏开始。");
-        
+
+        fullRoundNumber = 1;
+        onboardingEventTriggered = false;
+        playerHasRolledThisTurn = false;
+
+        AddLog("游戏开始。");
+
         if (setupPlacementSystem == null)
         {
             setupPlacementSystem = FindObjectOfType<SetupPlacementSystem>();
         }
-        
+
+        if (setupPlacementSystem == null)
+        {
+            Debug.LogError("没有找到 SetupPlacementSystem，无法进入初始放置阶段。");
+            return;
+        }
+
         ChangeState(GameState.SetupPlacement);
-        
+
         setupPlacementSystem.StartSetupPlacement();
     }
-    
+
     public void EnterPlayerTurnStartFromSetup()
     {
         EnterPlayerTurnStart();
@@ -126,23 +153,39 @@ public class GameStateMachine : MonoBehaviour
 
         playerHasRolledThisTurn = false;
 
-        AddLog("玩家回合开始。");
+        AddLog($"第 {fullRoundNumber} 轮：玩家回合开始。");
+
+        // 第 3 轮保底触发一次入岛事件
+        if (fullRoundNumber == 3 && !onboardingEventTriggered)
+        {
+            AddLog("前两轮没有触发入岛事件，第 3 轮开始自动触发一次入岛事件。");
+
+            if (eventSystem != null)
+            {
+                eventSystem.DrawAndResolveOnboardingEvent(GameDataManager.Instance.playerData);
+                onboardingEventTriggered = true;
+            }
+            else
+            {
+                Debug.LogError("没有找到 EventSystem，无法触发入岛事件。");
+            }
+        }
 
         ChangeState(GameState.PlayerRollDice);
-        AddLog("等待玩家掷骰。按 R 掷骰。");
+        AddLog("等待玩家掷骰。");
     }
 
     public void OnClickRollDice()
     {
         if (currentState != GameState.PlayerRollDice)
         {
-            Debug.Log("当前不是玩家掷骰阶段，不能掷骰。");
+            AddLog("当前不是玩家掷骰阶段，不能掷骰。");
             return;
         }
 
         if (playerHasRolledThisTurn)
         {
-            Debug.Log("本回合已经掷过骰。");
+            AddLog("本回合已经掷过骰。");
             return;
         }
 
@@ -154,7 +197,7 @@ public class GameStateMachine : MonoBehaviour
         lastDiceB = result.diceB;
         lastDiceTotal = result.total;
 
-        Debug.Log($"玩家掷骰：{lastDiceA} + {lastDiceB} = {lastDiceTotal}");
+        AddLog($"玩家掷骰：{lastDiceA} + {lastDiceB} = {lastDiceTotal}");
 
         if (lastDiceTotal == 7)
         {
@@ -172,6 +215,8 @@ public class GameStateMachine : MonoBehaviour
 
         productionSystem.ResolveProduction(lastDiceTotal);
 
+        RefreshUI();
+
         EnterPlayerAction();
     }
 
@@ -179,24 +224,53 @@ public class GameStateMachine : MonoBehaviour
     {
         ChangeState(GameState.PlayerEvent);
 
-        Debug.Log("玩家掷出 7，本回合不进行普通资源生产。");
-        Debug.Log("当前版本暂时跳过正式事件弹窗，直接进入玩家行动阶段。");
+        AddLog("玩家掷出 7，本回合不进行普通资源生产。");
+
+        CharacterData player = GameDataManager.Instance.playerData;
+
+        ResolveEventForCharacter(player);
 
         EnterPlayerAction();
+    }
+
+    private void ResolveEventForCharacter(CharacterData character)
+    {
+        if (eventSystem == null)
+        {
+            Debug.LogError("没有找到 EventSystem，无法处理事件。");
+            return;
+        }
+
+        if (ShouldUseOnboardingEvent())
+        {
+            AddLog("触发入岛事件池。");
+            eventSystem.DrawAndResolveOnboardingEvent(character);
+            onboardingEventTriggered = true;
+        }
+        else
+        {
+            AddLog("触发普通全局事件池。");
+            eventSystem.DrawAndResolveGlobalEvent(character);
+        }
+    }
+
+    private bool ShouldUseOnboardingEvent()
+    {
+        return fullRoundNumber <= 2 && !onboardingEventTriggered;
     }
 
     private void EnterPlayerAction()
     {
         ChangeState(GameState.PlayerAction);
 
-        Debug.Log("进入玩家行动阶段。");
+        AddLog("进入玩家行动阶段。");
     }
 
     public void OnClickBuildBond()
     {
         if (currentState != GameState.PlayerAction)
         {
-            Debug.Log("当前不是玩家行动阶段，不能建造纽带。");
+            AddLog("当前不是玩家行动阶段，不能建造纽带。");
             return;
         }
 
@@ -211,7 +285,7 @@ public class GameStateMachine : MonoBehaviour
     {
         if (currentState != GameState.PlayerAction)
         {
-            Debug.Log("当前不是玩家行动阶段，不能建造认同点。");
+            AddLog("当前不是玩家行动阶段，不能建造认同点。");
             return;
         }
 
@@ -226,7 +300,7 @@ public class GameStateMachine : MonoBehaviour
     {
         if (currentState != GameState.PlayerAction)
         {
-            Debug.Log("当前不是玩家行动阶段，不能升级认同中心。");
+            AddLog("当前不是玩家行动阶段，不能升级认同中心。");
             return;
         }
 
@@ -241,21 +315,21 @@ public class GameStateMachine : MonoBehaviour
     {
         if (currentState != GameState.PlayerAction && currentState != GameState.PlayerEvent)
         {
-            Debug.Log("当前阶段不能使用【推开】。");
+            AddLog("当前阶段不能使用【推开】。");
             return;
         }
 
         if (pushAwaySystem != null)
-            {
-                pushAwaySystem.SelectPushAwayBondMode();
-            }
+        {
+            pushAwaySystem.SelectPushAwayBondMode();
+        }
     }
 
     public void OnClickEndTurn()
     {
         if (currentState != GameState.PlayerAction)
         {
-            Debug.Log("当前不是玩家行动阶段，不能结束回合。");
+            AddLog("当前不是玩家行动阶段，不能结束回合。");
             return;
         }
 
@@ -279,7 +353,7 @@ public class GameStateMachine : MonoBehaviour
         lastDiceB = result.diceB;
         lastDiceTotal = result.total;
 
-        Debug.Log($"NPC 掷骰：{lastDiceA} + {lastDiceB} = {lastDiceTotal}");
+        AddLog($"NPC 掷骰：{lastDiceA} + {lastDiceB} = {lastDiceTotal}");
 
         yield return new WaitForSeconds(npcActionDelay);
 
@@ -291,6 +365,7 @@ public class GameStateMachine : MonoBehaviour
         {
             ChangeState(GameState.NPCProduction);
             productionSystem.ResolveProduction(lastDiceTotal);
+            RefreshUI();
         }
 
         yield return new WaitForSeconds(npcActionDelay);
@@ -301,6 +376,7 @@ public class GameStateMachine : MonoBehaviour
 
         if (!CheckGameEnd())
         {
+            fullRoundNumber++;
             EnterPlayerTurnStart();
         }
     }
@@ -309,28 +385,13 @@ public class GameStateMachine : MonoBehaviour
     {
         ChangeState(GameState.NPCEvent);
 
-        Debug.Log("NPC 掷出 7，本回合不进行普通资源生产。");
-        Debug.Log("NPC 事件系统暂时简化处理。");
+        AddLog("NPC 掷出 7，本回合不进行普通资源生产。");
 
         CharacterData npc = GameDataManager.Instance.npcData;
 
-        // 简化事件：NPC 失去 1 个随机资源
-        LoseRandomResource(npc);
-    }
+        ResolveEventForCharacter(npc);
 
-    private void LoseRandomResource(CharacterData character)
-    {
-        ResourceType randomType = (ResourceType)Random.Range(0, 5);
-
-        if (character.resources.Get(randomType) > 0)
-        {
-            character.resources.Add(randomType, -1);
-            Debug.Log($"{character.characterName} 因事件失去 1 个 {randomType}");
-        }
-        else
-        {
-            Debug.Log($"{character.characterName} 没有可失去的 {randomType}");
-        }
+        RefreshUI();
     }
 
     private void EnterNPCAction()
@@ -348,7 +409,7 @@ public class GameStateMachine : MonoBehaviour
         }
 
         ChangeState(GameState.PlayerAction);
-        Debug.Log("玩家可以继续行动，或按 Enter 结束回合。");
+        AddLog("玩家可以继续行动，或结束回合。");
     }
 
     private bool CheckGameEnd()
@@ -360,7 +421,7 @@ public class GameStateMachine : MonoBehaviour
         if (isGameEnd)
         {
             ChangeState(GameState.GameOver);
-            Debug.Log("游戏结束。");
+            AddLog("游戏结束。");
             return true;
         }
 
@@ -371,19 +432,25 @@ public class GameStateMachine : MonoBehaviour
     {
         currentState = newState;
         Debug.Log($"当前状态切换为：{currentState}");
-        
-            if (uiController != null)
-            {
-                uiController.RefreshAll();
-            }
+
+        RefreshUI();
     }
+
     private void AddLog(string message)
     {
         Debug.Log(message);
-    
+
         if (uiController != null)
         {
             uiController.AddLog(message);
+            uiController.RefreshAll();
+        }
+    }
+
+    private void RefreshUI()
+    {
+        if (uiController != null)
+        {
             uiController.RefreshAll();
         }
     }
